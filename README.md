@@ -1,0 +1,2 @@
+# twitter_fftable
+あるTwitterユーザーのフォロワーまたはフォローユーザーをcsvとして保存する
