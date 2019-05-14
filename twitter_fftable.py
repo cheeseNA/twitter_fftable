@@ -13,7 +13,15 @@ if __name__ == "__main__":
         setting.ACCESS_TOKEN, setting.ACCESS_TOKEN_SECRET)
     user_name = input("input user name>>>").rstrip()
     target = input("followers or friends ?>>>").rstrip()
-    
+    attributions = [
+        "id_str", "name", "screen_name",
+        "followers_count", "friends_count",
+        "listed_count", "favourites_count",
+        "statuses_count", "created_at", "lang", "protected", 
+        "default_profile", "default_profile_image",
+        "following", "description"
+        ]
+
     cursor = -1
     ids = []
     while True:
@@ -38,8 +46,7 @@ if __name__ == "__main__":
 
     with open(user_name + "_" + target + ".csv", "w", encoding="utf-8") as f:
         writer = csv.writer(f, lineterminator="\n")
-        writer.writerow(["id", "screen_name", "protected", "friends_count",
-                         "followers_count", "name", "lang", "following"])
+        writer.writerow([x for x in attributions])
         cursor = -1
         for i in range(int((len(ids)+99) / 100)):
             param = {
@@ -56,11 +63,6 @@ if __name__ == "__main__":
             else:
                 data = json.loads(res.text)
                 for user in data:
-                    # a "following" attribute is deprecated
-                    writer.writerow([user["id"], user["screen_name"],
-                                     user["protected"], user["friends_count"],
-                                     user["followers_count"], user["name"],
-                                     user["lang"], user["following"]
-                                     ])
+                    writer.writerow([user[x] for x in attributions])
             print(str(i+1) + "/" + str(int((len(ids)+99) / 100)) + " completed")
     print("finish fetching user data")
