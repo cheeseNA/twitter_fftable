@@ -31,6 +31,7 @@ if __name__ == "__main__":
             "stringify_ids" : True,
             "screen_name" : user_name
             }
+        # 15 requests per 15 minutes
         res = twitter.get("https://api.twitter.com/1.1/" + target + "/ids.json",
                           params=param)
         if res.status_code != 200:
@@ -55,6 +56,7 @@ if __name__ == "__main__":
                 }
             if i == int((len(ids)+99) / 100) - 1:
                 param["user_id"] = ",".join(ids[i*100:])
+            # 900 requests per 15 minutes (user auth)
             res = twitter.post("https://api.twitter.com/1.1/users/lookup.json",
                                params=param)
             if res.status_code != 200:
