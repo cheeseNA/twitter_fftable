@@ -24,6 +24,7 @@ if __name__ == "__main__":
 
     cursor = -1
     ids = []
+    print("fetching ids...")
     while True:
         param = {
             "count" : 5000,
@@ -43,18 +44,20 @@ if __name__ == "__main__":
             cursor = data["next_cursor"]
         if cursor == 0:
             break
-    print("finish fetching ids")
+    print("finished!")
 
+    print("fetching user data...")
     with open(user_name + "_" + target + ".csv", "w", encoding="utf-8") as f:
         writer = csv.writer(f, lineterminator="\n")
         writer.writerow([x for x in attributions])
         cursor = -1
-        for i in range(int((len(ids)+99) / 100)):
+        n = int((len(ids)+99) / 100)
+        for i in range(n):
             param = {
                 "user_id" : ",".join(ids[i*100:i*100 + 100]),
                 "tweet_mode" : False
                 }
-            if i == int((len(ids)+99) / 100) - 1:
+            if i == n - 1:
                 param["user_id"] = ",".join(ids[i*100:])
             # 900 requests per 15 minutes (user auth)
             res = twitter.post("https://api.twitter.com/1.1/users/lookup.json",
@@ -66,5 +69,5 @@ if __name__ == "__main__":
                 data = json.loads(res.text)
                 for user in data:
                     writer.writerow([user[x] for x in attributions])
-            print(str(i+1) + "/" + str(int((len(ids)+99) / 100)) + " completed")
-    print("finish fetching user data")
+            print("\r[{0}] {1}/{2}".format("#"*(i+1) + '-'*(n-i-1), i+1, n), end="")
+    print("finished!")
