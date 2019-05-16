@@ -70,4 +70,4 @@ if __name__ == "__main__":
                 for user in data:
                     writer.writerow([user[x] for x in attributions])
             print("\r[{0}] {1}/{2}".format("#"*(i+1) + '-'*(n-i-1), i+1, n), end="")
-    print("finished!")
+    print("\nfinished!")
