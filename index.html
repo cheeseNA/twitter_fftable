@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawSeriesChart);
+    function getCsv(url){
+      var txt = new XMLHttpRequest();
+      txt.open('get', url, false)
+      txt.send();
+
+      var arr = txt.responseText.split('\n');
+      var res = [];
+      for(var i = 0; i < arr.length; i++){
+        if(arr[i] == '') break;
+
+        res[i] = arr[i].split(',');
+        for(var j = 0; j < res[i].length; j++){
+          if(res[i][j].match(/\-?\d+(.\d+)?(e[\+\-]d+)?/)){
+            res[i][j] = parseFloat(res[i][j].replace('"', ''));
+          }
+        }
+      }
+      return res;
+    }
+    function drawSeriesChart() {
+      var csv = getCsv('dlsite_audio_friends.csv').slice(0, 5);
+      console.log(csv);
+      var data = google.visualization.arrayToDataTable(csv);
+
+      var options = {
+        title: 'Correlation between life expectancy, fertility rate ' +
+               'and population of some world countries (2010)',
+        hAxis: {title: 'Life Expectancy'},
+        vAxis: {title: 'Fertility Rate'},
+        bubble: {textStyle: {fontSize: 11}}
+      };
+
+      var chart = new google.visualization.BubbleChart(document.getElementById('series_chart_div'));
+      chart.draw(data, options);
+    }
+    </script>
+  </head>
+  <body>
+    <div id="series_chart_div" style="width: 900px; height: 500px;"></div>
+  </body>
+</html>
